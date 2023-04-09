@@ -1,14 +1,112 @@
-/* Chat containers */
-.message-container {
-    border: 2px solid #dedede;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px 0;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Darker chat container */
-.darker {
-    border-color: #ccc;
-    background-color: #ddd;
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+
+}
+
+button {
+    border: none;
+    border-radius: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:disabled {
+    background-color: #777;
+    color: #ddd;
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.chat-header {
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-header h2 {
+    font-size: 24px;
+    margin-top: 10px;
+    margin-right: auto;
+}
+
+.chat-body {
+    height: calc(70vh);
+    overflow-y: scroll;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    max-width: 60%;
+}
+
+.message .content {
+    font-size: 14px;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+}
+
+.message.received {
+    background-color: #f2f2f2;
+    float: left;
+    clear: both;
+}
+
+.message.sent {
+    background-color: #007bff;
+    color: #fff;
+    float: right;
+    clear: both;
+}
+
+.message.received .username {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 5px; /* apply the needed vertical margins */
+}
+
+.message.received .time {
+    font-size: 12px;
+    color: #777;
+}
+
+.message.sent .time {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.chat-footer {
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+
+.chat-footer textarea {
+    flex: 1;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px 10px 20px;
+    margin-right: 10px;
+    font-size: 14px;
 }

@@ -9,6 +9,12 @@ $(document).ready(() => {
     $("#disconnect").click(() => {
         disconnect();
     });
+    $("#message").on("keypress", (event) => {
+        if (event.keyCode === 13 && !event.shiftKey) { // check if Enter key is pressed and Shift key is not pressed
+            event.preventDefault(); // prevent the default behavior of the Enter key
+            $("#send").click();
+        }
+    });
     $("#send").click(() => {
         const content = $("#message").val()
         if (content !== "") {
@@ -24,11 +30,12 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, (frame) => {
         username = stompClient.ws._transport.url.split('/')[5];
-        $("#send").prop("disabled", (_) => false);
         $("#connect").prop("disabled", (_) => true);
         $("#disconnect").prop("disabled", (_) => false);
+        $("#message").prop("disabled", (_) => false);
+        $("#send").prop("disabled", (_) => false);
         subscription = stompClient.subscribe("/topic/messages", (message) => {
-            console.log("/topic/messages: " + message);
+            console.log("Received message" + message);
             updateMessage(JSON.parse(message.body));
         });
         console.log("subscription: " + JSON.stringify(subscription));
@@ -40,24 +47,34 @@ function disconnect() {
         subscription.unsubscribe();
     }
     stompClient.disconnect(() => {
-        $("#send").prop("disabled", (_) => true);
         $("#connect").prop("disabled", (_) => false);
         $("#disconnect").prop("disabled", (_) => true);
+        $("#message").prop("disabled", (_) => true);
+        $("#send").prop("disabled", (_) => true);
         alert("Disconnected!");
     });
 }
 
 function updateMessage(msg) {
-    const div = $("<div>");
     console.log("msg.username: " + msg.sender + "my username: " + username);
+
+    const div = $("<div>");
     if (msg.sender === username) {
-        div.addClass("message-container darker");
+        div.addClass("message sent");
+        $("<div>").addClass("content").text(msg.content).appendTo(div);
+        $("<span>").addClass("time").text(convertRFC3339ToTime(msg.sendAt)).appendTo(div);
     } else {
-        div.addClass("message-container");
+        div.addClass("message received");
+        $("<span>").addClass("username").text(msg.sender).appendTo(div);
+        $("<span>").addClass("time").text(convertRFC3339ToTime(msg.sendAt)).appendTo(div);
+        $("<div>").addClass("content").text(msg.content).appendTo(div);
     }
-    $("<p>").text(msg.sender + ": " + msg.content).appendTo(div);
-    $("<span>").text(convertRFC3339ToTime(msg.sendAt)).appendTo(div);
-    $("#message-history").append(div);
+    const chatBody = $("#message-history");
+    chatBody.append(div);
+    // scroll smoothly to bottom
+    chatBody.animate({
+        scrollTop: chatBody.prop("scrollHeight")
+    }, 500)
 }
 
 function convertRFC3339ToTime(datetimeStr) {

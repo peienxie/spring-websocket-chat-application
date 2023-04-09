@@ -11,35 +11,20 @@
     <script src="/chat.js"></script>
 </head>
 <body>
-
-<div class="container" style="margin-top: 50px">
-    <div class="row">
-        <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="connect">Connection</label>
-                    <button type="button" id="connect" class="btn btn-default"> Connect</button>
-                    <button type="button" id="disconnect" class="btn btn-default" disabled="disabled"> Disconnect
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <input type="text" id="message" class="form-control">
-                    <button type="button" id="send" class="btn btn-default" disabled="disabled">Send</button>
-                </div>
-            </form>
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Chatty</h2>
+        <div class="chat-connection">
+            <button id="connect">Connect</button>
+            <button id="disconnect" disabled="disabled">Disconnect</button>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="message-history">
-                <!-- messages will be added dynamically here -->
-            </div>
-        </div>
+    <div id="message-history" class="chat-body">
+    </div>
+    <div class="chat-footer">
+        <label for="message"></label>
+        <textarea id="message" placeholder="Send a message..." rows="1" disabled="disabled"></textarea>
+        <button id="send" disabled="disabled">Send</button>
     </div>
 </div>
 </body>
