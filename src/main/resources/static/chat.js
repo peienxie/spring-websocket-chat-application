@@ -49,14 +49,14 @@ function disconnect() {
 
 function updateMessage(msg) {
     const div = $("<div>");
-    console.log("msg.username: " + msg.username + "my username: " + username);
-    if (msg.username === username) {
+    console.log("msg.username: " + msg.sender + "my username: " + username);
+    if (msg.sender === username) {
         div.addClass("message-container darker");
     } else {
         div.addClass("message-container");
     }
-    $("<p>").text(msg.username + ": " + msg.content).appendTo(div);
-    $("<span>").text(convertRFC3339ToTime(msg.timestamp)).appendTo(div);
+    $("<p>").text(msg.sender + ": " + msg.content).appendTo(div);
+    $("<span>").text(convertRFC3339ToTime(msg.sendAt)).appendTo(div);
     $("#message-history").append(div);
 }
 

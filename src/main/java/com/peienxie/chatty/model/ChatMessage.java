@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ChatMessage {
+    private String id;
     private String content;
-    private String username;
-    private LocalDateTime timestamp;
+    private String sender;
+    private String receiver;
+    private LocalDateTime sendAt;
+    private boolean read;
 }
