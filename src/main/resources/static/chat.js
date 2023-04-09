@@ -1,5 +1,5 @@
 let stompClient = null;
-let subscription = null;
+let subscriptions = [];
 let username = null;
 
 $(document).ready(() => {
@@ -22,7 +22,6 @@ $(document).ready(() => {
             $("#message").val("");
         }
     });
-
 });
 
 function connect() {
@@ -38,14 +37,30 @@ function connect() {
             console.log("Received message" + message);
             updateMessage(JSON.parse(message.body));
         });
-        console.log("subscription: " + JSON.stringify(subscription));
+        subscriptions.push(subscription)
+
+        subscription = stompClient.subscribe("/topic/user", (message) => {
+            console.log("Received user event message:" + message);
+            updateUserEvent(JSON.parse(message.body));
+        });
+        subscriptions.push(subscription)
+
+        // Subscribe to the error channel
+        errorSubscription = stompClient.subscribe('/user/queue/errors', (errorFrame) => {
+            console.error(`Received error: ${errorFrame}`);
+        });
+        subscriptions.push(errorSubscription)
+        console.log("subscriptions: " + JSON.stringify(subscriptions));
+
+        sendUserJoin()
     });
 }
 
 function disconnect() {
-    if (subscription !== null) {
-        subscription.unsubscribe();
-    }
+    sendUserLeave()
+
+    subscriptions.forEach(sub => sub.unsubscribe())
+
     stompClient.disconnect(() => {
         $("#connect").prop("disabled", (_) => false);
         $("#disconnect").prop("disabled", (_) => true);
@@ -69,12 +84,9 @@ function updateMessage(msg) {
         $("<span>").addClass("time").text(convertRFC3339ToTime(msg.sendAt)).appendTo(div);
         $("<div>").addClass("content").text(msg.content).appendTo(div);
     }
-    const chatBody = $("#message-history");
-    chatBody.append(div);
-    // scroll smoothly to bottom
-    chatBody.animate({
-        scrollTop: chatBody.prop("scrollHeight")
-    }, 500)
+
+    $("#message-history").append(div);
+    scrollSmoothlyToBottom();
 }
 
 function convertRFC3339ToTime(datetimeStr) {
@@ -87,6 +99,34 @@ function convertRFC3339ToTime(datetimeStr) {
     return `${formattedHours}:${formattedMinutes} ${amPm}`;
 }
 
+function updateUserEvent(event) {
+    const div = $("<div>").addClass("user-event");
+    $("<span>").addClass("username").text(event.username).appendTo(div);
+    if (event.event === "USER_JOIN") {
+        $("<span>").text("join.").appendTo(div);
+    } else {
+        $("<span>").text("leave.").appendTo(div);
+    }
+
+    $("#message-history").append(div);
+    scrollSmoothlyToBottom();
+}
+
+function scrollSmoothlyToBottom() {
+    const chatBody = $("#message-history");
+    chatBody.animate({
+        scrollTop: chatBody.prop("scrollHeight")
+    }, 500)
+}
+
 function sendMessage(content) {
     stompClient.send("/app/chat/message", {}, JSON.stringify({ "content": content }));
+}
+
+function sendUserJoin() {
+    stompClient.send("/app/user/join", { "username": username });
+}
+
+function sendUserLeave() {
+    stompClient.send("/app/user/leave", { "username": username });
 }

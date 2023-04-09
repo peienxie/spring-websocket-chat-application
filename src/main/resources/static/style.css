@@ -49,6 +49,8 @@ button:disabled {
 }
 
 .chat-body {
+    display: flex;
+    flex-direction: column;
     height: calc(70vh);
     overflow-y: scroll;
 }
@@ -68,15 +70,13 @@ button:disabled {
 
 .message.received {
     background-color: #f2f2f2;
-    float: left;
-    clear: both;
+    align-self: flex-start;
 }
 
 .message.sent {
     background-color: #007bff;
     color: #fff;
-    float: right;
-    clear: both;
+    align-self: flex-end;
 }
 
 .message.received .username {
@@ -93,6 +93,27 @@ button:disabled {
 .message.sent .time {
     font-size: 12px;
     color: #ccc;
+}
+
+.user-event {
+    align-self: center;
+    align-items: center;
+    text-align: center;
+
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    height: fit-content;
+    max-width: 80%;
+    background-color: #f2f2f2;
+    word-wrap: break-word;
+}
+
+.user-event .username {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 5px; /* apply the needed vertical margins */
 }
 
 .chat-footer {
