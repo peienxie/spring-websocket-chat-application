@@ -1,21 +1,34 @@
 package com.peienxie.chatty.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.peienxie.chatty.model.ChatMessage;
+import com.peienxie.chatty.repository.ChatMessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ChatMessageService {
 
-    private final List<ChatMessage> chatMessages = new ArrayList<>();
+    private final ChatMessageRepository chatMessageRepository;
 
-    public void saveMessage(ChatMessage chatMessage) {
-        chatMessages.add(chatMessage);
+    @Autowired
+    public ChatMessageService(ChatMessageRepository chatMessageRepository) {
+        this.chatMessageRepository = chatMessageRepository;
     }
 
-    public List<ChatMessage> getChatMessages() {
-        return chatMessages;
+    public void saveMessage(ChatMessage chatMessage) {
+        chatMessageRepository.save(chatMessage);
+    }
+
+    public List<ChatMessage> getMessages() {
+        return chatMessageRepository.findAll(Sort.by("sendAt").descending());
+    }
+
+    public List<ChatMessage> getMessagesBySenderAndReceiver(String sender, String receiver) {
+        return chatMessageRepository.findBySenderAndReceiver(sender, receiver, Sort.by("sendAt").descending());
     }
 }
